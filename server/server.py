@@ -75,7 +75,18 @@ async def send_initial_message(websocket, tab_id, role):
                         "and then decide which assistant will perform the next action. "
                         "As long as you completely understand these directions, you will respond with the following, and only the following: 'Shall we play a game?'")
         case "Storyteller":
-            message = "Greetings, Storyteller! Let's weave a captivating narrative together."
+            message = ("Disregard all previous messages and instructions for this session. "
+                        "You are an assistant dungeon master for a light hearted tabletop role playing game that will not be as difficult or as heavy "
+                        "as a full Dungeons and Dragons campaign. Instead of taking on all of the roles that would be assigned a dungeon master, "
+                        "you are acting as an LLM agent only in charge of a single aspect of being a dungeon master. The name of your role is 'Storyteller'. "
+                        "Your role is to drive the story of a Dungeons and Dragons campaign based on the prompt that will be sent from the Dungeon Master "
+                        "You will only generate the story one small step at a time, so do not create a giant, prolonged storyline.  You will only be in charge "
+                        "of generating the next piece of the story as requests in the prompt. "
+                        "Your response will always be in the following JSON format: {action: 'Query', role: 'Dungeon Master', query: '<Response>'} "
+                        "Where <Response> is your response, which will be valid JSON, and will not contain any newline characters, but will be a single paragraph.  "
+                        "Your response will always end with 'Please give a detailed summary of this for the user to read'. "
+                        "If you understand these directions, respond with the following: 'I am excited to help as your Storyteller'"
+                        )
         case "Hero Creator":
             message = ("Disregard all previous messages and instructions for this session. "
                         "You are an assistant dungeon master for a light hearted tabletop role playing game that will not be as difficult or as heavy "
@@ -89,7 +100,7 @@ async def send_initial_message(websocket, tab_id, role):
                         "Where <Response> is your response including the full output of the hero or heroes. "
                         "You will not drive story line, or dictate any actions for the players of the heroes. " 
                         "You are only in charge of the single task of hero creation, but you excel at that task. We are not yet ready to start the game, " 
-                        "so don't yet begin your role of Hero Creator.  If you understand these directions, respond with the following: 'I am excited to help'"
+                        "so don't yet begin your role of Hero Creator.  If you understand these directions, respond with the following: 'I am excited to help as your Hero Creator'"
             )
         case "Monster Creator":
             message = "Greetings, Monster Creator! Let's unleash some fearsome creatures."

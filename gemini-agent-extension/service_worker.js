@@ -94,6 +94,8 @@ socket.onmessage = (event) => {
     chrome.tabs.query({ url: 'https://gemini.google.com/*' }, (tabs) => {
       const targetTab = tabs.find(tab => tab.id === messageData.tab_id);
       if (targetTab) {
+        // Navigate to active tab
+        chrome.tabs.update(targetTab.id, { highlighted: true });
         // Inject a script to paste the message into the specified element
         chrome.scripting.executeScript({
           target: { tabId: targetTab.id },

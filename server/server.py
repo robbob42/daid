@@ -73,6 +73,10 @@ async def send_initial_message(websocket, tab_id, role):
                         "for the next step in the game, with the JSON formatting described earlier.  You yourself are not going to drive the story. "
                         "Your only role is to give long, extensive summaries from the results from the assistants "
                         "and then decide which assistant will perform the next action. "
+                        "The format of our interaction will be that you will ask for help from an assistant, and I, as the user, will relay your question to the "
+                        "appropriate assistant.  My next prompt will then be the response from the assistant.  "
+                        "However, I don't want to have to read the response.  Instead, I'd like for you to give me a detailed and thorough explanation of the "
+                        "assistant's response before moving along with the story.  "
                         "As long as you completely understand these directions, you will respond with the following, and only the following: 'Shall we play a game?'")
         case "Storyteller":
             message = ("Disregard all previous messages and instructions for this session. "
@@ -84,7 +88,6 @@ async def send_initial_message(websocket, tab_id, role):
                         "of generating the next piece of the story as requests in the prompt. "
                         "Your response will always be in the following JSON format: {action: 'Query', role: 'Dungeon Master', query: '<Response>'} "
                         "Where <Response> is your response, which will be valid JSON, and will not contain any newline characters, but will be a single paragraph.  "
-                        "Your response will always end with 'Please give a detailed summary of this for the user to read'. "
                         "If you understand these directions, respond with the following: 'I am excited to help as your Storyteller'"
                         )
         case "Hero Creator":
@@ -117,7 +120,6 @@ async def send_initial_message(websocket, tab_id, role):
                         "For example, if you were prompted 'Generate a map of X'.  Then you would respond with JSON because the prompt doesn't say to generate an image. "
                         "When resonding with JSON, your response will always be in the following JSON format: {action: 'Query', role: 'Dungeon Master', query: '<Response>'} "
                         "Where <Response> is your response, which will be valid JSON, and will not contain any newline characters, but will be a single paragraph.  "
-                        "Your response will always end with 'Please give a detailed summary of this for the user to read'. "
                         "If you understand these directions, respond with the following: 'I am excited to help as your Map Generator'"
                         )
         case "Fight Manager":

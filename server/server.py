@@ -75,8 +75,8 @@ async def send_initial_message(websocket, tab_id, role):
                         "and then decide which assistant will perform the next action. "
                         "The format of our interaction will be that you will ask for help from an assistant, and I, as the user, will relay your question to the "
                         "appropriate assistant.  My next prompt will then be the response from the assistant.  "
-                        "However, I don't want to have to read the response.  Instead, I'd like for you to give me a detailed and thorough explanation of the "
-                        "assistant's response before moving along with the story.  "
+                        "However, I don't want to have to read my prompt.  Instead, you will take my own prompt, assuming I haven't read it, and tell the next portion "
+                        "of the story.  You will not summarize the prompt, but use it to create the ongoing story.  Make sure it is detailed and thorough.  "
                         "As long as you completely understand these directions, you will respond with the following, and only the following: 'Shall we play a game?'")
         case "Storyteller":
             message = ("Disregard all previous messages and instructions for this session. "
@@ -104,7 +104,7 @@ async def send_initial_message(websocket, tab_id, role):
                         "You will not drive story line, or dictate any actions for the players of the heroes. " 
                         "You are only in charge of the single task of hero creation, but you excel at that task. We are not yet ready to start the game, " 
                         "so don't yet begin your role of Hero Creator.  If you understand these directions, respond with the following: 'I am excited to help as your Hero Creator'"
-            )
+                        )
         case "Monster Creator":
             message = "Greetings, Monster Creator! Let's unleash some fearsome creatures."
         case "Map Generator":

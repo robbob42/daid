@@ -35,7 +35,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             function: () => {
                 // Create the button element
                 const customButton = document.createElement('button');
-                customButton.textContent = 'My Custom Button';
+                customButton.textContent = 'Send Message';
                 customButton.id = 'myCustomButton';
         
                 // Style the button with a D&D theme
@@ -98,7 +98,7 @@ socket.onmessage = (event) => {
         chrome.scripting.executeScript({
           target: { tabId: targetTab.id },
           function: (message) => {
-            const messageElement = document.querySelector('#app-root > main > side-navigation-v2 > bard-sidenav-container > bard-sidenav-content > div.content-wrapper > div > div.content-container > chat-window > div > input-container > div > input-area-v2 > div > div > div.text-input-field_textarea-wrapper.ng-tns-c3688966844-2 > div > div > rich-textarea > div.ql-editor.ql-blank.textarea.new-input-ui > p');
+            const messageElement = document.querySelector('#app-root > main > side-navigation-v2 > bard-sidenav-container > bard-sidenav-content > div.content-wrapper > div > div.content-container > chat-window > div > input-container > div > input-area-v2 > div > div [class*="text-input-field_textarea-wrapper"]  > div > div > rich-textarea > div.ql-editor.ql-blank.textarea.new-input-ui > p');
             if (messageElement) {
               messageElement.textContent = message; // Paste the message
 

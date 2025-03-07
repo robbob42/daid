@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DAID Setup</title>
+    <style>
+        body {
+            width: 250px;
+            padding: 20px;
+            font-family: 'MedievalSharp', serif; /* Use a D&D-themed font */
+            background-color: #282828; /* Dark background */
+            color: #d4af37; /* Gold text */
+            text-align: center;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: #555; /* Darker button */
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            border-radius: 5px;
+            font-family: 'MedievalSharp', serif;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #777; /* Lighter hover */
+        }
+
+        #reset { /* Style for the Reset button */
+            margin-top: 20px; 
+            background-color: #990000; /* Red background */
+            border: 2px solid #ffcccc; /* Light red border */
+            color: #ffffff; /* White text */
+            font-weight: bold;
+        }
+
+        #reset:hover {
+            background-color: #cc0000; /* Darker red on hover */
+        }
+    </style>
+</head>
+<body>
+    <p>Will this tab be part of a DAID setup?</p>
+    <button id="dm">Dungeon Master</button>
+    <button id="storyteller">Storyteller</button>
+    <button id="hero">Hero Creator</button>
+    <button id="monster">Monster Creator</button>
+    <button id="map">Map Generator</button>
+    <button id="fight">Fight Manager</button>
+
+    <button id="reset">Reset All Data</button> <div id="UUID-Display"></div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

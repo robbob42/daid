@@ -32,3 +32,4 @@ Steps:
 - The Dungeon Master will ask the user for some directions on setting up the players.  Respond appropriately.
 - The Dungeon Master should generate a special box with the title `JSON`.  This is how the Dungeon Master requests information from one of the other Assistants.  Press the `Copy` button in the top right to copy the text to your clipboard, and then press the `Send Message` button in the bottom right.
 - The code will be automatically sent to the appropriate tab.  In this case, it will go to the Hero Creator tab.  You can verify this by going to that tab and seeing Gemini's response being printed.  Once the response is complete, it should also be in a `JSON` box.  Again, press the `Copy` button and then `Send Message`.
+

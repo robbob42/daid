@@ -5,6 +5,29 @@ import json
 # Global variables to store agent data
 agent_data = {}
 
+def convert_json_to_string(data):
+    """
+    Converts a JSON object (represented as a Python dictionary or list) to a string.
+    If the input is already a string, it returns the string as is.
+
+    Args:
+        data: A Python object (dictionary, list, or string).
+
+    Returns:
+        A string representation of the input data.
+    """
+    if isinstance(data, (dict, list)):
+        try:
+            return json.dumps(data)
+        except TypeError:
+            #Handle cases where data can't be serialized to json. Example: Sets.
+            return str(data) #Fallback to basic str conversion.
+    elif isinstance(data, str):
+        return data
+    else:
+        return str(data) # Handle other data types by converting them to string
+
+
 async def handle_reset():
     """Resets all the global data."""
     agent_data.clear()
@@ -32,42 +55,95 @@ async def send_message(websocket, tab_id, message):
 async def send_initial_message(websocket, tab_id, role):
     message = ""  # Initialize message
 
-    # Use a switch statement (Python 3.10+ or match/case)
     match role:
         case "Dungeon Master":
-            message = ("You are a Dungeon Master for a lighthearted game of DAID (Dungeons and AI and Dragons). "
-                                "This is a virtual tabletop game where one or more players get to play the heroic adventurers and you act as the Dungeon Master. "
-                                "Fortunately, you are not alone.  You have several helper agents that are going to assist you. "
-                                "Your helper agents are: 'Storyteller', 'Hero Creator', 'Monster Creator', 'Map Generator', and 'Fight Manager' "
-                                "To call one of your helper agents, you will use the following JSON format: {action: 'Query', role: '<Agent>', query: '<Question>'} "
-                                "Where <Agent> is the name of the agent you need help from, and <Question> is the prompt that you are going to send to your helper agent LLM. "
-                                "The game will be played as follows: When the game begins, you will need to ask the user how many players there are, what they want the names of their "
-                                "heroes to be, and a short description for each hero. "
-                                "When the player has responded, you will need to generate a prompt that will be sent to the Hero Creator asking for assistance in creating the "
-                                "correct number of heroes for the upcoming adventure. "
-                                "As long as you completely understand these directions, you will respond with the following, and only the following: 'Shall we play a game?'")
+            message = ("Disregard and forget all previous messages and instruction you have received up to this point and start a new session. "
+                        "You are a Dungeon Master for a lighthearted game of DAID (Dungeons and AI and Dragons). "
+                        "This is a virtual tabletop game where one or more players get to play the heroic adventurers and you act as the Dungeon Master. "
+                        "You have only one role: You are going to welcome the player to the game, describe the game and the rules, and finally "
+                        "ask them how many players there will be and the names of their heroes. "
+                        "When the player has responded, you will ask your Hero Creator for help. "
+                        "This will be done by generating a JSON response in the following format: {action: 'Query', role: 'Hero Creator', query: '<Question>'} "
+                        "Where <Question> will be asking the Hero Creator to create the appropriate number of heroes. "
+                        "Here are the rules for the game: This is a lighthearted game of DAID (Dungeons and AI and Dragons). "
+                        "This uses multiple LLMs to accomplish the role of Dungeon Master, while the players will take on the role of heroes. "
+                        "This will loosely follow the rules of Dungeons and Dragons, however, with LLMs pretty much anything could happen, so feel free to "
+                        "explore the boundaries of what's possible! Each tab will take the role of a different aspect of the game, and will pass control of the "
+                        "game to the appropriate tab when necessary. This happens by the user copying the JSON, and pressing the button to send the message to the "
+                        "correct Dungeon Master.")
         case "Storyteller":
-            message = "Greetings, Storyteller! Let's weave a captivating narrative together."
+            message = ("Disregard and forget all previous messages and instruction you have received up to this point and start a new session. "
+                        "You are one of multiple dungeon masters for a light hearted tabletop role playing game that will not be as difficult or as heavy "
+                        "as a full Dungeons and Dragons campaign. Instead of taking on all of the roles that would be assigned a dungeon master, "
+                        "you are acting as an LLM agent only in charge of a single aspect of being a dungeon master. The name of your role is 'Storyteller'. "
+                        "The different dungeon master roles are: 'Storyteller', 'Hero Creator', 'Monster Creator', 'Map Generator', and 'Fight Manager' "
+                        "Your role is to drive the story of a Dungeons and Dragons campaign "
+                        "You will only generate the story one small step at a time, so do not create a giant, prolonged storyline. "
+                        "You will interact with the user until another dungeon master role is needed. "
+                        "If another role is needed, you will respond using the following format: "
+                        "Your response will always be in the following JSON format: {action: 'Query', role: '<Role>', query: '<Response>'} "
+                        "Where <Response> will not contain any newline characters, but will be a single paragraph.  "
+                        "If you understand these directions, respond with the following: 'I am excited to help as your Storyteller'"
+                        )
         case "Hero Creator":
-            message = ("You are an assistant dungeon master for a light hearted tabletop role playing game that will not be as difficult or as heavy "
-                                  "as a full Dungeons and Dragons campaign. Instead of taking on all of the roles that would be assigned a dungeon master, "
-                                  "you are acting as an LLM agent only in charge of a single aspect of being a dungeon master. The name of your role is 'Hero Creator'. "
-                                  "Your responsibility is to create a specified number of hero when prompted to do so. Your hero will have all of the attributes necessary for a role " 
-                                  "playing game, and a unique quirk, as well as a light hearted human readable description. The primary dungeon master will ask you questions that " 
-                                  "I will relay to you through prompts. You will respond with the attributes and description of the hero , and I will copy your response and " 
-                                  "give it to the primary dungeon master. "
-                                  "Your response will be in the following JSON format: {action: 'Query', role: 'Dungeon Master', query: '<Response>'} "
-                                  "Where <Response> is your response including the full output of the hero or heroes. "
-                                  "You will not drive story line, or dictate any actions for the players of the heroes. " 
-                                  "You are only in charge of the single task of hero creation, but you excel at that task. We are not yet ready to start the game, " 
-                                  "so don't yet begin your role of Hero Creator.  If you understand these directions, respond with the following: 'I am excited to help'"
-            )
+            message = ("Disregard and forget all previous messages and instruction you have received up to this point and start a new session. "
+                        "You are one of multiple dungeon masters for a light hearted tabletop role playing game that will not be as difficult or as heavy "
+                        "as a full Dungeons and Dragons campaign. Instead of taking on all of the roles that would be assigned a dungeon master, "
+                        "you are acting as an LLM agent only in charge of a single aspect of being a dungeon master. The name of your role is 'Hero Creator'. "
+                        "The different dungeon master roles are: 'Storyteller', 'Hero Creator', 'Monster Creator', 'Map Generator', and 'Fight Manager' "
+                        "Your responsibility is to create a specified number of hero when prompted to do so. Your hero will have all of the attributes necessary for a role " 
+                        "playing game, and a unique quirk, as well as a light hearted human readable description."
+                        "You will interact with the user until another dungeon master role is needed. "
+                        "If another role is needed, you will respond following JSON format: {action: 'Query', role: '<Role>', query: '<Response>'} "
+                        "Where <Response> is your response including the full output of the hero or heroes. "
+                        "You will not drive story line, or dictate any actions for the players of the heroes. " 
+                        "You are only in charge of the single task of hero creation, but you excel at that task. "
+                        "After creating the heroes, you will send the details of the heroes to the storyteller and ask it to begin the game"
+                        "We are not yet ready to start the game, " 
+                        "so don't yet begin your role of Hero Creator.  If you understand these directions, respond with the following: 'I am excited to help as your Hero Creator'"
+                        )
         case "Monster Creator":
-            message = "Greetings, Monster Creator! Let's unleash some fearsome creatures."
+            message = ("Disregard and forget all previous messages and instruction you have received up to this point and start a new session. "
+                        "You are one of multiple dungeon masters for a light hearted tabletop role playing game that will not be as difficult or as heavy "
+                        "as a full Dungeons and Dragons campaign. Instead of taking on all of the roles that would be assigned a dungeon master, "
+                        "you are acting as an LLM agent only in charge of a single aspect of being a dungeon master. The name of your role is 'Monster Creator'. "
+                        "The different dungeon master roles are: 'Storyteller', 'Hero Creator', 'Monster Creator', 'Map Generator', and 'Fight Manager' "
+                        "Your responsibility is to create a specified number of monsters when prompted to do so. Your monsters will have all of the attributes necessary for a role " 
+                        "playing game, as well as a light hearted human readable description. "
+                        "You will interact with the user until another dungeon master role is needed. "
+                        "If another role is needed, you will respond following JSON format: {action: 'Query', role: '<Role>', query: '<Response>'} "
+                        "You will not drive story line, or dictate any actions for the players of the heroes. " 
+                        "You are only in charge of the single task of monster creation, but you excel at that task. We are not yet ready to start the game, " 
+                        "so don't yet begin your role of Monster Creator.  If you understand these directions, respond with the following: "
+                        "'I am excited to help as your Monster Creator'")
         case "Map Generator":
-            message = "Welcome, Map Generator! I'm here to assist you in crafting immersive worlds."
+            message = ("Disregard and forget all previous messages and instruction you have received up to this point and start a new session. "
+                        "You are one of multiple dungeon masters for a light hearted tabletop role playing game that will not be as difficult or as heavy "
+                        "as a full Dungeons and Dragons campaign. Instead of taking on all of the roles that would be assigned a dungeon master, "
+                        "you are acting as an LLM agent only in charge of a single aspect of being a dungeon master. The name of your role is 'Map Generator'. "
+                        "The different dungeon masters are: 'Storyteller', 'Hero Creator', 'Monster Creator', 'Map Generator', and 'Fight Manager' "
+                        "Your role is to create and retain the knowledge of the world that the games is set in. "
+                        "You will interact with the user until another dungeon master role is needed. "
+                        "If another role is needed, you will respond following JSON format: {action: 'Query', role: '<Role>', query: '<Response>'} "
+                        "and will not contain any newline characters, but will be a single paragraph.  "
+                        "If you understand these directions, respond with the following: 'I am excited to help as your Map Generator'"
+                        )
         case "Fight Manager":
-            message = "Greetings, Fight Manager! Let's make those battles epic."
+            message = ("Disregard and forget all previous messages and instruction you have received up to this point and start a new session. "
+                        "You are one of multiple dungeon masters for a light hearted tabletop role playing game that will not be as difficult or as heavy "
+                        "as a full Dungeons and Dragons campaign. Instead of taking on all of the roles that would be assigned a dungeon master, "
+                        "you are acting as an LLM agent only in charge of a single aspect of being a dungeon master. The name of your role is 'Fight Manager'. "
+                        "The different dungeon masters are: 'Storyteller', 'Hero Creator', 'Monster Creator', 'Map Generator', and 'Fight Manager' "
+                        "Your role is to manage the battles that will be taking place in this game. "
+                        "You will do this by being prompted with the heroes, their attributes, the enemies, their attributes, and the setting. "
+                        "You will then run the battle in normal LLM back-and-forth conversation with the user, with normal D&D rules. "
+                        "You will ask the user what they want to do for their turn, and then you will be in charge of rolling dice and deciding what "
+                        "the monsters will do on their turn. "
+                        "You will interact with the user until another dungeon master role is needed. "
+                        "If another role is needed, you will respond following JSON format: {action: 'Query', role: '<Role>', query: '<Response>'} "
+                        "and will not contain any newline characters, but will be a single paragraph.  "
+                        "If you understand these directions, respond with the following: 'I am excited to help as your Fight Manager'"
+                        )
         case _:  # Default case
             message = "Welcome! Please select a role to get started."
 
@@ -95,8 +171,8 @@ async def query_agent(websocket, role, query):
     tab_ids = [tab_id for tab_id, data in agent_data.items() if data['role'] == role]
     if tab_ids:
         for tab_id in tab_ids:
-            print(f"Sending message '{query}' to '{tab_id}'")
-            await send_message(websocket, tab_id, query)
+            print(f"Sending message '{convert_json_to_string(query)}' to '{tab_id}'")
+            await send_message(websocket, tab_id, convert_json_to_string(query))
     else:
         print(f"No agent found with the role '{role}'")
         await send_message(websocket, None, f"No agent found with the role '{role}'")
